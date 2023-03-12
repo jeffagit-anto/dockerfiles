@@ -8,25 +8,37 @@ on:
 
 jobs:
 
-  build:
-
+  list-dockerfiles:
+    # list changed or new Dockerfiles and set a matrix with the result
     runs-on: ubuntu-latest
+    outputs:
+      changed_dockerfiles: ${{steps.get-changed-and-new-files.outputs.changed_dockerfiles}}
+      matrix: ${{steps.set-matrix.outputs.matrix}}
 
     steps:
-
-      - uses: actions/checkout@v3
+      - id: get-changed-and-new-files
+        name: Get changed and new Dockerfiles
+        uses: actions/checkout@v3
+        # purpose of this hack is to work with PR as well as pull
         with:
           fetch-depth: ${{ github.event_name == 'pull_request' && 2 || 0 }}
-      - name: Get changed files
-        id: changed-files
         run: |
             if ${{ github.event_name == 'pull_request' }}; then
-                echo "changed_dockerfiles=$(git diff --name-only -r HEAD^1 HEAD | grep "Dockerfile" |xargs)" >> $GITHUB_OUTPUT
+              echo "::set-output name=changed_dockerfiles::$(git diff --name-only -r HEAD^1 HEAD | grep 'Dockerfile' |xargs)" >> $GITHUB_OUTPUT
             else
-                echo "changed_dockerfiles=$(git diff --name-only ${{ github.event.before }} ${{ github.event.after }} | grep "Dockerfile" | xargs)" >> $GITHUB_OUTPUT
+              echo "::set-output name=changed_dockerfiles::$(git diff --name-only ${{ github.event.before }} ${{ github.event.after }} | grep 'Dockerfile' | xargs)" >> $GITHUB_OUTPUT
             fi
-      - name: List changed files
+      - id: set-matrix
+        name: Set matrix
         run: |
-            for file in ${{ steps.changed-files.outputs.changed_dockerfiles }}; do
-                echo "$file was changed"
-            done
+          # open bracket 
+          echo "::set-output name=matrix::$('[')"
+          for file in ${{ steps.get-changed-and-new-files.outputs.changed_dockerfiles }}; do
+            echo "$file has changed or is new"
+            echo "::set-output name=matrix::$(${{steps.set-matrix.outputs.matrix}}, $file)"
+          done
+          # close bracket 
+          echo "::set-output name=matrix::$(${{steps.set-matrix.outputs.matrix}}])"
+          echo "computed matrix: ${{steps.set-matrix.outputs.matrix}}"
+          # echo "::set-output name=matrix::$(echo ${{ steps.get-changed-and-new-files.outputs.changed_dockerfiles }} | jq -R -s -c 'split("\n")[:-1]')"
+  
