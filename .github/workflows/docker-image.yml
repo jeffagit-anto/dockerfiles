@@ -16,9 +16,9 @@ jobs:
       matrix: ${{steps.set-matrix.outputs.matrix}}
 
     steps:
+      - uses: actions/checkout@v3
       - id: get-changed-and-new-files
         name: Get changed and new Dockerfiles
-        uses: actions/checkout@v3
         # purpose of this hack is to work with PR as well as pull
         with:
           fetch-depth: ${{ github.event_name == 'pull_request' && 2 || 0 }}
