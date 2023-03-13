@@ -62,16 +62,19 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       -
+        name: name Image
+        run: echo IMAGE_NAME=${{ matrix.dockerfile%*\/}} >> $GITHUB_ENV
+      -
         name: Build and export to Docker
         uses: docker/build-push-action@v4
         with:
           file: ${{ matrix.dockerfile }}
           load: true
-          tags: ${{ env.TEST_TAG }}
+          tags: ${{ env.IMAGE_NAME}}-latest
       -
         name: Test
         run: |
-          docker run --rm ${{ env.TEST_TAG }}
+          docker run --rm ${{ env.IMAGE_NAME}}-latest
       -
         name: Build and push
         uses: docker/build-push-action@v4
@@ -79,7 +82,7 @@ jobs:
           file: ${{ matrix.dockerfile }}
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ${{ env.LATEST_TAG }}
+          tags: ${{ env.IMAGE_NAME}}-latest
 
 
 
