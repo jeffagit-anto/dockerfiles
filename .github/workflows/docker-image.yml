@@ -35,6 +35,8 @@ jobs:
             echo "matrix=[]" >> $GITHUB_ENV
           else
             echo "matrix=$(echo $changed_dockerfiles | jq -R -s -c 'split("\n")[:-1]')" >> $GITHUB_ENV
-          fi \
-          echo "computed matrix=$matrix" >> $GITHUB_STEP_SUMMARY
+          fi
+      - id: summary
+        run: |
+          echo "computed matrix=$steps.set-matrix.outputs.matrix" >> $GITHUB_STEP_SUMMARY
   
