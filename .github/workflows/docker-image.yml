@@ -33,10 +33,12 @@ jobs:
         run: |
           # open bracket \
           echo "matrix=[" >> $GITHUB_OUTPUT \
-          for file in "${{ steps.get-changed-and-new-files.outputs.changed_dockerfiles }}"; do
-            echo "$file has changed or is new" >> $GITHUB_OUTPUT \
-            echo "matrix=$matrix, $file" >> $GITHUB_OUTPUT \
-          done \
+          if "${{ steps.get-changed-and-new-files.outputs.changed_dockerfiles }}"; then
+            for file in "${{ steps.get-changed-and-new-files.outputs.changed_dockerfiles }}"; do
+              echo "$file has changed or is new" >> $GITHUB_OUTPUT \
+              echo "matrix=$matrix, $file" >> $GITHUB_OUTPUT \
+            done \
+          fi \
           # close bracket  \
           echo "matrix=$matrix]" >> $GITHUB_OUTPUT \
           echo "computed matrix=$matrix" >> $GITHUB_STEP_SUMMARY
