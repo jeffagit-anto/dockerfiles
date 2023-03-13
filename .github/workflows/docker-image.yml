@@ -31,7 +31,7 @@ jobs:
       - id: set-matrix
         name: Set matrix
         run: |
-          if ${{ steps.get-changed-and-new.dockerfiles == ""}}; then 
+          if ${{ steps.get-changed-and-new.dockerfiles == ''}}; then 
             echo "matrix=[]" >> $GITHUB_ENV
           else
             echo "matrix=$(echo $steps.get-changed-and-new.dockerfiles | jq -R -s -c 'split("\n")[:-1]')" >> $GITHUB_ENV
