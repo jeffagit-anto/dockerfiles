@@ -42,6 +42,7 @@ jobs:
 
   build-images:
     needs: list-dockerfiles
+    if: ${{ needs.list-dockerfiles.outputs.matrix != '[]' && needs.list-dockerfiles.outputs.matrix != '' }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: true
