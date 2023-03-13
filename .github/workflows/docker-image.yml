@@ -12,7 +12,7 @@ jobs:
     # list changed or new Dockerfiles and set a matrix with the result
     runs-on: ubuntu-latest
     outputs:
-      matrix: ${{ steps.set-matrix.outputs.matrix }}
+      matrix: ${{ steps.set-matrix.output }}
 
     steps:
       - uses: actions/checkout@v3
@@ -32,13 +32,13 @@ jobs:
         name: Set matrix
         run: |
           if ${{ steps.get-changed-and-new.dockerfiles == ''}}; then 
-            echo "matrix=[]" >> $GITHUB_ENV
+            echo "output=[]" >> $GITHUB_ENV
           else
-            echo "matrix=$(echo $steps.get-changed-and-new.dockerfiles | jq -R -s -c 'split("\n")[:-1]')" >> $GITHUB_ENV
+            echo "output=$(echo $steps.get-changed-and-new.dockerfiles | jq -R -s -c 'split("\n")[:-1]')" >> $GITHUB_ENV
           fi
       - id: summary
         run: |
-          echo "computed matrix=${{steps.set-matrix.outputs.matrix}}" >> $GITHUB_STEP_SUMMARY
+          echo "computed matrix=${{steps.set-matrix.output}}" >> $GITHUB_STEP_SUMMARY
 
   build-images:
     needs: list-dockerfiles
