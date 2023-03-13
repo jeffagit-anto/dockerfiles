@@ -24,20 +24,20 @@ jobs:
         name: Get changed and new Dockerfiles
         run: |
             if ${{ github.event_name == 'pull_request' }}; then
-              echo "changed_dockerfiles=$(git diff --name-only -r HEAD^1 HEAD | grep 'Dockerfile' |xargs)" >> $GITHUB_STATE
+              echo "changed_dockerfiles=$(git diff --name-only -r HEAD^1 HEAD | grep 'Dockerfile' |xargs)" >> $GITHUB_OUTPUT
             else
-              echo "changed_dockerfiles=$(git diff --name-only ${{ github.event.before }} ${{ github.event.after }} | grep 'Dockerfile' | xargs)" >> $GITHUB_STATE
+              echo "changed_dockerfiles=$(git diff --name-only ${{ github.event.before }} ${{ github.event.after }} | grep 'Dockerfile' | xargs)" >> $GITHUB_OUTPUT
             fi
       - id: set-matrix
         name: Set matrix
         run: |
           # open bracket 
-          echo "matrix=[" >> $GITHUB_STATE
+          echo "matrix=[" >> $GITHUB_OUTPUT
           for file in ${{ steps.get-changed-and-new-files.outputs.changed_dockerfiles }}; do
             echo "$file has changed or is new" >> $GITHUB_OUTPUT
-            echo "matrix=$matrix, $file" >> $GITHUB_STATE
+            echo "matrix=$matrix, $file" >> $GITHUB_OUTPUT
           done
           # close bracket 
-          echo "matrix=$matrix]" >> $GITHUB_STATE
+          echo "matrix=$matrix]" >> $GITHUB_OUTPUT
           echo "computed matrix=$matrix" >> $GITHUB_STEP_SUMMARY
   
