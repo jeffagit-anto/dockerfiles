@@ -12,7 +12,7 @@ jobs:
     # list changed or new Dockerfiles and set a matrix with the result
     runs-on: ubuntu-latest
     outputs:
-      matrix: ${{ steps.set-matrix.output }}
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
 
     steps:
       - uses: actions/checkout@v3
@@ -24,17 +24,17 @@ jobs:
         name: Get changed and new Dockerfiles
         run: |
             if ${{ github.event_name == 'pull_request' }}; then
-              echo "dockerfiles=$(git diff --name-only -r HEAD^1 HEAD | grep 'Dockerfile' |xargs)" >> $GITHUB_ENV
+              echo "dockerfiles=$(git diff --name-only -r HEAD^1 HEAD | grep 'Dockerfile' |xargs)" >> $GITHUB_OUTPUT
             else
-              echo "dockerfiles=$(git diff --name-only ${{ github.event.before }} ${{ github.event.after }} | grep 'Dockerfile' | xargs)" >> $GITHUB_ENV
+              echo "dockerfiles=$(git diff --name-only ${{ github.event.before }} ${{ github.event.after }} | grep 'Dockerfile' | xargs)" >> $GITHUB_OUTPUT
             fi
       - id: set-matrix
         name: Set matrix
         run: |
-            echo "output=$(echo ${{ dockerfiles }} | jq -R -s -c 'split("\n")[:-1]')" >> $GITHUB_ENV
+            echo "matrix=$(echo ${{ steps.get-changed-and-new.outputs.dockerfiles }} | jq -R -s -c 'split("\n")[:-1]')" >> $GITHUB_OUTPUT
       - id: summary
         run: |
-          echo "computed matrix=${{ steps.set-matrix.output }}" >> $GITHUB_STEP_SUMMARY
+          echo "computed matrix=${{ steps.set-matrix.outputs.matrix }}" >> $GITHUB_STEP_SUMMARY
 
   build-images:
     needs: list-dockerfiles
