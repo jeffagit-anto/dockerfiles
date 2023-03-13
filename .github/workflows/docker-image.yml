@@ -31,18 +31,14 @@ jobs:
       - id: set-matrix
         name: Set matrix
         run: |
-          if ${{ steps.get-changed-and-new.dockerfiles == ''}}; then 
-            echo "output=[]" >> $GITHUB_ENV
-          else
             echo "output=$(echo $steps.get-changed-and-new.dockerfiles | jq -R -s -c 'split("\n")[:-1]')" >> $GITHUB_ENV
-          fi
       - id: summary
         run: |
           echo "computed matrix=${{steps.set-matrix.output}}" >> $GITHUB_STEP_SUMMARY
 
   build-images:
     needs: list-dockerfiles
-    if: ${{ needs.list-dockerfiles.outputs.matrix != '' && needs.list-dockerfiles.outputs.matrix != '[]' }}
+    if: ${{ needs.list-dockerfiles.outputs.matrix != '' && needs.list-dockerfiles.outputs.matrix != '[""]' }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: true
