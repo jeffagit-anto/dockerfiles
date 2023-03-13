@@ -12,8 +12,7 @@ jobs:
     # list changed or new Dockerfiles and set a matrix with the result
     runs-on: ubuntu-latest
     outputs:
-      changed_dockerfiles: ${{steps.get-changed-and-new-files.outputs.changed_dockerfiles}}
-      matrix: ${{steps.set-matrix.outputs.matrix}}
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
 
     steps:
       - uses: actions/checkout@v3
