@@ -63,7 +63,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       -
         name: name Image
-        run: echo IMAGE_NAME=${matrix.dockerfile%\/} >> $GITHUB_ENV
+        run: echo "IMAGE_NAME=$(dirname ${{matrix.dockerfile}})" >> $GITHUB_ENV
       -
         name: Build and export to Docker
         uses: docker/build-push-action@v4
