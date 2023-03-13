@@ -39,5 +39,5 @@ jobs:
           done
           # close bracket 
           echo "matrix=$matrix]" >> $GITHUB_STATE
-          echo "computed matrix=$matrix" >> $ $GITHUB_OUTPUT
+          echo "computed matrix=$matrix" >> $GITHUB_OUTPUT
   
