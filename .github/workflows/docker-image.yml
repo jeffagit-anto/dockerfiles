@@ -32,7 +32,7 @@ jobs:
         name: Set matrix
         run: |
           echo "matrix=$(echo ${{ steps.get-changed-and-new-files.outputs.changed_dockerfiles }} | jq -R -s -c 'split("\n")[:-1]')" >> $GITHUB_ENV \
-          if ${{ steps.set-matrix.outputs.matrix == '[""]'}}; then
-            echo "matrix=[]">> $GITHUB_ENV
+          if ${{ steps.set-matrix.outputs.matrix == '[""]'}}; then \
+            echo "matrix=[]">> $GITHUB_ENV \
           echo "computed matrix=$steps.set-matrix.outputs.matrix" >> $GITHUB_STEP_SUMMARY
   
