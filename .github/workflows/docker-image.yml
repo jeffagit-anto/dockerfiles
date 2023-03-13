@@ -35,10 +35,9 @@ jobs:
           echo "matrix=[" >> $GITHUB_STATE
           for file in ${{ steps.get-changed-and-new-files.outputs.changed_dockerfiles }}; do
             echo "$file has changed or is new" >> $GITHUB_OUTPUT
-            echo "matrix=$(${{ steps.set-matrix.outputs.matrix }}, $file)" >> $GITHUB_STATE
+            echo "matrix=$matrix, $file" >> $GITHUB_STATE
           done
           # close bracket 
-          echo "matrix=${{ steps.set-matrix.outputs.matrix }}])" >> $GITHUB_STATE
-          echo "computed matrix=${{ steps.set-matrix.outputs.matrix }}" >> $ $GITHUB_OUTPUT
-          # echo "::set-output name=matrix::$(echo ${{ steps.get-changed-and-new-files.outputs.changed_dockerfiles }} | jq -R -s -c 'split("\n")[:-1]')"
+          echo "matrix=$matrix]" >> $GITHUB_STATE
+          echo "computed matrix=$matrix" >> $ $GITHUB_OUTPUT
   
