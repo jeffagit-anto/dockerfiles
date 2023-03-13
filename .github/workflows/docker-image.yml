@@ -38,5 +38,5 @@ jobs:
           fi
       - id: summary
         run: |
-          echo "computed matrix=$steps.set-matrix.outputs.matrix" >> $GITHUB_STEP_SUMMARY
+          echo "computed matrix=${{ steps.set-matrix.outputs.matrix }}" >> $GITHUB_STEP_SUMMARY
   
