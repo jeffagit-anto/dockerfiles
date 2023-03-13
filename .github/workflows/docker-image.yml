@@ -25,21 +25,21 @@ jobs:
         name: Get changed and new Dockerfiles
         run: |
             if ${{ github.event_name == 'pull_request' }}; then
-              echo "::set-output name=changed_dockerfiles::$(git diff --name-only -r HEAD^1 HEAD | grep 'Dockerfile' |xargs)" >> $GITHUB_OUTPUT
+              echo "changed_dockerfiles=$(git diff --name-only -r HEAD^1 HEAD | grep 'Dockerfile' |xargs)" >> $GITHUB_STATE
             else
-              echo "::set-output name=changed_dockerfiles::$(git diff --name-only ${{ github.event.before }} ${{ github.event.after }} | grep 'Dockerfile' | xargs)" >> $GITHUB_OUTPUT
+              echo "changed_dockerfiles=$(git diff --name-only ${{ github.event.before }} ${{ github.event.after }} | grep 'Dockerfile' | xargs)" >> $GITHUB_STATE
             fi
       - id: set-matrix
         name: Set matrix
         run: |
           # open bracket 
-          echo "::set-output name=matrix::$('[')"
+          echo "matrix=[" >> $GITHUB_STATE
           for file in ${{ steps.get-changed-and-new-files.outputs.changed_dockerfiles }}; do
-            echo "$file has changed or is new"
-            echo "::set-output name=matrix::$(${{steps.set-matrix.outputs.matrix}}, $file)"
+            echo "$file has changed or is new" >> $GITHUB_OUTPUT
+            echo "matrix=$(${{ steps.set-matrix.outputs.matrix }}, $file)" >> $GITHUB_STATE
           done
           # close bracket 
-          echo "::set-output name=matrix::$(${{steps.set-matrix.outputs.matrix}}])"
-          echo "computed matrix: ${{steps.set-matrix.outputs.matrix}}"
+          echo "matrix=${{ steps.set-matrix.outputs.matrix }}])" >> $GITHUB_STATE
+          echo "computed matrix=${{ steps.set-matrix.outputs.matrix }}" >> $ $GITHUB_OUTPUT
           # echo "::set-output name=matrix::$(echo ${{ steps.get-changed-and-new-files.outputs.changed_dockerfiles }} | jq -R -s -c 'split("\n")[:-1]')"
   
