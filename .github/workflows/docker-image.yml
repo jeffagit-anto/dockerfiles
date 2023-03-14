@@ -24,14 +24,15 @@ jobs:
         name: Get changed and new Dockerfiles
         run: |
             if ${{ github.event_name == 'pull_request' }}; then
-              echo "dockerfiles=$(git diff --name-only -r HEAD^1 HEAD | grep 'Dockerfile')" >> $GITHUB_OUTPUT
+              echo "dockerfiles=$(git diff --name-only -r HEAD^1 HEAD | grep 'Dockerfile' | xargs)" >> $GITHUB_OUTPUT
             else
-              echo "dockerfiles=$(git diff --name-only ${{ github.event.before }} ${{ github.event.after }} | grep 'Dockerfile')" >> $GITHUB_OUTPUT
+              echo "dockerfiles=$(git diff --name-only ${{ github.event.before }} ${{ github.event.after }} | grep 'Dockerfile' | xargs)" >> $GITHUB_OUTPUT
             fi
       - id: set-matrix
         name: Set matrix
         run: |
-            echo "matrix=$(echo ${{ steps.get-changed-and-new.outputs.dockerfiles }} | jq -R -s -c 'split("\n")[:-1]')" >> $GITHUB_OUTPUT
+            # sorry for what follows^^. The intent is to map 'anyNoncontainingWhitespaceString anotherNoncontainingWhitespaceString' into '["anyNoncontainingWhitespaceString","anotherNoncontainingWhitespaceString"]'
+            echo "matrix=$(echo ${{ steps.get-changed-and-new.outputs.dockerfiles }} | jq -R -s -c 'split("\n")[:-1]' | sed 's/ /\",\"/g' )" >> $GITHUB_OUTPUT
       - id: summary
         run: |
           echo "computed matrix=${{ steps.set-matrix.outputs.matrix }}" >> $GITHUB_STEP_SUMMARY
