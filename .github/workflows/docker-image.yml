@@ -24,7 +24,7 @@ jobs:
         name: Get changed and new Dockerfiles
         run: |
             if ${{ github.event_name == 'pull_request' }}; then
-              echo "dockerfiles=$(git diff --name-only -r HEAD^1 HEAD | grep 'Dockerfile' |xargs)" >> $GITHUB_OUTPUT
+              echo "dockerfiles=$(git diff --name-only -r HEAD^1 HEAD | grep 'Dockerfile')" >> $GITHUB_OUTPUT
             else
               echo "dockerfiles=$(git diff --name-only ${{ github.event.before }} ${{ github.event.after }} | grep 'Dockerfile' | xargs)" >> $GITHUB_OUTPUT
             fi
