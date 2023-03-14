@@ -5,7 +5,6 @@ WORKDIR /
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
-       texlive-latex-extra \
        texlive-xetex \
        texlive-fonts-extra
 
