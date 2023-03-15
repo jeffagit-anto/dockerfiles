@@ -64,12 +64,20 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       -
         name: name Image with tag "latest" on main branch
-        run: echo "IMAGE_NAME=${{ secrets.DOCKERHUB_USERNAME }}/$(dirname ${{matrix.dockerfile}}):latest" >> $GITHUB_ENV
         if: env.GITHUB_REF_NAME == 'main'
+        run: echo "IMAGE_NAME=${{ secrets.DOCKERHUB_USERNAME }}/$(dirname ${{matrix.dockerfile}}):latest" >> $GITHUB_ENV
       -
         name: name Image with tag <branch_name> on non-main branch
-        run: echo "IMAGE_NAME=${{ secrets.DOCKERHUB_USERNAME }}/$(dirname ${{matrix.dockerfile}}):${{ env.GITHUB_REF_NAME }}" >> $GITHUB_ENV
         if: env.GITHUB_REF_NAME != 'main'
+        env:
+          GITHUB_REF: ${{ env.GITHUB_REF_NAME }}
+        run: |
+          echo "env.GITHUB_REF_NAME = ${{ env.GITHUB_REF_NAME }}"
+          echo "env.GITHUB_REF = ${{ env.GITHUB_REF }}"
+          echo "GITHUB_REF = $GITHUB_REF"
+          echo "is branch ${GITHUB_REF##*/} ?"
+          echo "IMAGE_NAME=${{ secrets.DOCKERHUB_USERNAME }}/$(dirname ${{matrix.dockerfile}}):${{ env.GITHUB_REF_NAME }}" >> $GITHUB_ENV
+          echo "IMAGE_NAME=$IMAGE_NAME"
       -
         name: Build and export to Docker
         uses: docker/build-push-action@v4
