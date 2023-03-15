@@ -9,7 +9,7 @@ RUN apt-get update \
        texlive-fonts-extra\
        make
 
-RUN groupadd -r xelatex && useradd --no-log-init -r -g xelatex xelatex
+RUN groupadd -g 1001 xelatex && useradd --create-home --no-log-init -u 1001 -g 1001 xelatex
 
 USER xelatex
 
