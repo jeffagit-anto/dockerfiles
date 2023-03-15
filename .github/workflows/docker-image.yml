@@ -57,12 +57,7 @@ jobs:
         env:
           GITHUB_REF: ${{ env.GITHUB_REF_NAME }}
         run: |
-          echo "env.GITHUB_REF_NAME = ${{ env.GITHUB_REF_NAME }}"
-          echo "env.GITHUB_REF = ${{ env.GITHUB_REF }}"
-          echo "GITHUB_REF = $GITHUB_REF"
-          echo "is branch ${GITHUB_REF##*/} ?"
-          echo "IMAGE_NAME=${{ secrets.DOCKERHUB_USERNAME }}/$(dirname ${{matrix.dockerfile}}):${{ env.GITHUB_REF_NAME }}" >> $GITHUB_ENV
-          echo "IMAGE_NAME=$IMAGE_NAME"
+          echo "IMAGE_NAME=${{ secrets.DOCKERHUB_USERNAME }}/$(dirname ${{matrix.dockerfile}}):${GITHUB_REF##*/}" >> $GITHUB_ENV
       -
         name: Checkout
         uses: actions/checkout@v3
