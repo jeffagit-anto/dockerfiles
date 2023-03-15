@@ -4,7 +4,7 @@ on:
   push:
     branches: [ "main" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "gha" ]
 
 jobs:
 
@@ -63,8 +63,13 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       -
-        name: name Image
+        name: name Image with tag "latest"
         run: echo "IMAGE_NAME=${{ secrets.DOCKERHUB_USERNAME }}/$(dirname ${{matrix.dockerfile}}):latest" >> $GITHUB_ENV
+        if: ${{ ${GITHUB_REF##*/} == "main" }}
+      -
+        name: name Image with tag <branch_name>
+        run: echo "IMAGE_NAME=${{ secrets.DOCKERHUB_USERNAME }}/$(dirname ${{matrix.dockerfile}}):${GITHUB_REF##*/}" >> $GITHUB_ENV
+        if: ${{ ${GITHUB_REF##*/} != "main" }}
       -
         name: Build and export to Docker
         uses: docker/build-push-action@v4
