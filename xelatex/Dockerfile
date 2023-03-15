@@ -6,7 +6,8 @@ WORKDIR /
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
        texlive-xetex \
-       texlive-fonts-extra
+       texlive-fonts-extra\
+       make
 
 RUN groupadd -r xelatex && useradd --no-log-init -r -g xelatex xelatex
 
