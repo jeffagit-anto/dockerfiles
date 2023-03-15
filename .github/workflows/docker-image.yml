@@ -64,10 +64,14 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       -
         name: name Image with tag "latest"
+        env:
+          GITHUB_REF: ${{ env.GITHUB_REF }}
         run: echo "IMAGE_NAME=${{ secrets.DOCKERHUB_USERNAME }}/$(dirname ${{matrix.dockerfile}}):latest" >> $GITHUB_ENV
         if: ${{ ${GITHUB_REF##*/} == "main" }}
       -
         name: name Image with tag <branch_name>
+        env:
+          GITHUB_REF: ${{ env.GITHUB_REF }}
         run: echo "IMAGE_NAME=${{ secrets.DOCKERHUB_USERNAME }}/$(dirname ${{matrix.dockerfile}}):${GITHUB_REF##*/}" >> $GITHUB_ENV
         if: ${{ ${GITHUB_REF##*/} != "main" }}
       -
